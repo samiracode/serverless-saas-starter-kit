@@ -1,0 +1,29 @@
+# Node
+node_modules/
+dist/
+.env
+.env.*
+
+# Python (in case used)
+__pycache__/
+*.py[cod]
+*.egg
+.eggs/
+*.log
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+crash.log
+*.tfvars
+
+# CDK
+cdk.out/
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
