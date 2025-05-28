@@ -30,4 +30,4 @@ Work in progress. Created May 2025.
 
 ## Author
 
-Built by care and curosity!
+Built by samiracode
