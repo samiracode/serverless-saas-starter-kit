@@ -2,7 +2,7 @@
 
 const AWS = require("aws-sdk");
 const dynamodb = new AWS.DynamoDB.DocumentClient();
-const TABLE_NAME = "hello-table"; // Make sure this matches your real table name
+const TABLE_NAME = "hello-table"; // Update if your actual table name is different
 
 exports.handler = async (event) => {
   const method = event.httpMethod;
@@ -27,12 +27,32 @@ exports.handler = async (event) => {
   }
 
   if (method === "POST") {
-    const body = JSON.parse(event.body);
+    let body;
+
+    try {
+      body = JSON.parse(event.body);
+    } catch (err) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Invalid JSON format" }),
+      };
+    }
+
+    // Validation: check if message exists
+    if (!body.message) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: "Missing 'message' field" }),
+      };
+    }
+
+    // Use provided ID or generate one
+    const itemId = body.id ? body.id : Date.now().toString();
 
     const params = {
       TableName: TABLE_NAME,
       Item: {
-        id: Date.now().toString(), // Simple unique ID
+        id: itemId,
         message: body.message,
       },
     };
@@ -41,7 +61,7 @@ exports.handler = async (event) => {
       await dynamodb.put(params).promise();
       return {
         statusCode: 201,
-        body: JSON.stringify({ message: "Item added successfully" }),
+        body: JSON.stringify({ message: "Item added successfully", id: itemId }),
       };
     } catch (err) {
       return {
