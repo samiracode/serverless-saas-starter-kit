@@ -4,9 +4,9 @@ terraform {
   required_version = ">= 1.0.0"
 
   backend "s3" {
-    bucket         = "cloudiness-terraform-state"      # Use your actual bucket name
+    bucket         = "cloudiness-terraform-state"     
     key            = "serverless-saas/terraform.tfstate"
-    region         = "eu-north-1"                       # Use your chosen AWS region
+    region         = "eu-north-1"                       
     dynamodb_table = "cloudiness-terraform-locks"
     encrypt        = true
   }

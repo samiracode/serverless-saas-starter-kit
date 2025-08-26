@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 
-
-
 interface Message {
   id: string;
   message: string;
@@ -11,6 +9,7 @@ function App() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [statusMessage, setStatusMessage] = useState("");
 
   const API_URL =
     "https://z0inj9ctq9.execute-api.eu-north-1.amazonaws.com/prod/hello";
@@ -33,14 +32,21 @@ function App() {
     if (!newMessage.trim()) return;
 
     try {
-      await fetch(API_URL, {
+      const res = await fetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ message: newMessage }),
       });
+
+      const data = await res.json();
+      console.log("POST response:", data); // 👀 log API response
+
       setNewMessage("");
+      setStatusMessage("Message sent!");
+      setTimeout(() => setStatusMessage(""), 3000);
+
       fetchMessages(); // Refresh list
     } catch (err) {
       console.error("Failed to send message:", err);
@@ -68,6 +74,8 @@ function App() {
         </button>
       </form>
 
+      {statusMessage && <p style={{ color: "green" }}>{statusMessage}</p>}
+
       {loading ? (
         <p>Loading...</p>
       ) : (
@@ -82,3 +90,4 @@ function App() {
 }
 
 export default App;
+
