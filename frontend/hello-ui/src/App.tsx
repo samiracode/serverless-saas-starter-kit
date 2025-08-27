@@ -1,93 +1,137 @@
-import { useEffect, useState } from "react";
 
-interface Message {
+import { useState, useEffect } from "react";
+
+const API_URL = "https://z0inj9ctq9.execute-api.eu-north-1.amazonaws.com/prod/hello";
+
+interface Task {
   id: string;
-  message: string;
+  task: string;
+  done: boolean;
 }
 
-function App() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [statusMessage, setStatusMessage] = useState("");
+export default function App() {
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [input, setInput] = useState("");
 
-  const API_URL =
-    "https://z0inj9ctq9.execute-api.eu-north-1.amazonaws.com/prod/hello";
+  // Load tasks on mount
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        setTasks(data);
+      } catch (err) {
+        console.error("Failed to fetch tasks", err);
+      }
+    };
+    fetchTasks();
+  }, []);
 
-  const fetchMessages = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(API_URL);
-      const data = await res.json();
-      setMessages(data);
-    } catch (err) {
-      console.error("Failed to fetch messages:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const addTask = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!input.trim()) return;
 
     try {
       const res = await fetch(API_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message: newMessage }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ task: input }),
       });
-
-      const data = await res.json();
-      console.log("POST response:", data); // 👀 log API response
-
-      setNewMessage("");
-      setStatusMessage("Message sent!");
-      setTimeout(() => setStatusMessage(""), 3000);
-
-      fetchMessages(); // Refresh list
+      const newTask = await res.json();
+      setTasks([...tasks, newTask]);
+      setInput("");
     } catch (err) {
-      console.error("Failed to send message:", err);
+      console.error("Failed to add task", err);
     }
   };
 
-  useEffect(() => {
-    fetchMessages();
-  }, []);
+  const toggleTask = async (id: string, done: boolean) => {
+    try {
+      const res = await fetch(API_URL, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, done: !done }),
+      });
+      const updated = await res.json();
+      setTasks(tasks.map((t) => (t.id === id ? updated : t)));
+    } catch (err) {
+      console.error("Failed to toggle task", err);
+    }
+  };
+
+  const deleteTask = async (id: string) => {
+    try {
+      await fetch(API_URL, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      setTasks(tasks.filter((t) => t.id !== id));
+    } catch (err) {
+      console.error("Failed to delete task", err);
+    }
+  };
+
+  const clearAll = async () => {
+    try {
+      await fetch(API_URL, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clearAll: true }),
+      });
+      setTasks([]);
+    } catch (err) {
+      console.error("Failed to clear all tasks", err);
+    }
+  };
 
   return (
-    <div style={{ padding: "2rem", fontFamily: "Arial" }}>
-      <h1>Hello App</h1>
+    <div style={{ maxWidth: "400px", margin: "2rem auto", fontFamily: "sans-serif" }}>
+      <h1>✅ To-Do List</h1>
 
-      <form onSubmit={handleSubmit} style={{ marginBottom: "1rem" }}>
+      <form onSubmit={addTask} style={{ display: "flex", gap: "0.5rem" }}>
         <input
           type="text"
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Write a message..."
-          style={{ padding: "0.5rem", width: "300px" }}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Enter a task..."
+          style={{ flex: 1, padding: "0.5rem" }}
         />
-        <button type="submit" style={{ marginLeft: "1rem" }}>
-          Send
-        </button>
+        <button type="submit">Add</button>
       </form>
 
-      {statusMessage && <p style={{ color: "green" }}>{statusMessage}</p>}
+      <button
+        onClick={clearAll}
+        style={{ marginTop: "1rem", background: "red", color: "white", padding: "0.5rem" }}
+      >
+        Clear All
+      </button>
 
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <ul>
-          {messages.map((msg) => (
-            <li key={msg.id}>{msg.message}</li>
-          ))}
-        </ul>
-      )}
+      <ul style={{ listStyle: "none", padding: 0, marginTop: "1rem" }}>
+        {tasks.map((t) => (
+          <li key={t.id} style={{ display: "flex", alignItems: "center", marginBottom: "0.5rem" }}>
+            <input
+              type="checkbox"
+              checked={t.done}
+              onChange={() => toggleTask(t.id, t.done)}
+            />
+            <span
+              style={{
+                flex: 1,
+                marginLeft: "0.5rem",
+                textDecoration: t.done ? "line-through" : "none",
+              }}
+            >
+              {t.task}
+            </span>
+            <button onClick={() => deleteTask(t.id)} style={{ marginLeft: "0.5rem" }}>
+              ❌
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
 
-export default App;
 
