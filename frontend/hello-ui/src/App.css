@@ -1,42 +1,89 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+
+/* General Layout */
+.app-container {
+  max-width: 500px;
+  margin: 50px auto;
+  padding: 20px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.title {
   text-align: center;
+  margin-bottom: 20px;
+  color: #333;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* Form */
+.task-form {
+  display: flex;
+  gap: 10px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.task-input {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.add-btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4caf50;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
 }
 
-.card {
-  padding: 2em;
+.add-btn:hover {
+  background-color: #45a049;
 }
 
-.read-the-docs {
-  color: #888;
+/* Task List */
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.task-item:hover {
+  background-color: #f1f1f1;
+}
+
+.task-text {
+  flex: 1;
+  cursor: pointer;
+}
+
+.task-text.completed {
+  text-decoration: line-through;
+  color: gray;
+}
+
+/* Delete Button */
+.delete-btn {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.delete-btn:hover {
+  color: red;
 }
