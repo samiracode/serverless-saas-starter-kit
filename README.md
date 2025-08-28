@@ -1,30 +1,53 @@
 # Serverless SaaS Starter Kit ☁️
 
-This project is a production-grade, AWS-native starter kit for building modern SaaS platforms. It showcases:
-
-- 🛠️ Infrastructure as Code (Terraform or CDK)
-- ⚙️ CI/CD Pipelines
-- 🔐 Security Best Practices
-- 📈 Monitoring & Logging
-- ☁️ Serverless & Container Support (Lambda / ECS / Docker)
-- 💡 Clean code, modular structure, GitHub history
+A simple **serverless To-Do List application** built with **React + TypeScript** on the frontend and **AWS Lambda + API Gateway + DynamoDB** on the backend.  
+This project demonstrates how to build and deploy a full-stack serverless app using modern cloud technologies.
 
 ---
 
-## Project Structure
+## 🚀 Features
+- Add new tasks
+- Mark tasks as completed (toggle)
+- Delete tasks
+- Responsive and clean UI
+- Built with **React (TypeScript)** frontend
+- Serverless backend using:
+  - **AWS Lambda** for business logic
+  - **Amazon API Gateway** for REST API
+  - **Amazon DynamoDB** for storage
 
-- `infrastructure/` – IaC setup (Terraform/CDK)
-- `backend/` – Lambda functions or containerized services
-- `frontend/` – Optional placeholder frontend (e.g., React)
+---
 
-## Deployment Targets
+## 📂 Project Structure
 
-- AWS Free Tier (for testing)
-- Future: Buy domain, secure HTTPS, route traffic via CloudFront
+├── frontend/ # React + TypeScript client
+│ ├── src/
+│ │ ├── App.tsx # Main UI logic
+│ │ ├── App.css # Styling
+│ │ └── ...
+│ └── package.json
+│
+├── backend/ # Lambda function code
+│ ├── main.py # Example Python Lambda handler
+│ └── ...
+│
+├── terraform/ # IaC for AWS resources
+│ ├── main.tf
+│ └── ...
+│
+└── README.md
 
-## 🚧 Status
 
-Work in progress. Created May 2025.
+---
+
+## 🛠️ Installation & Local Development
+
+### 1. Clone Repository
+```bash
+git clone https://github.com/samiracode/serverless-saas-starter-kit.git
+cd YOUR_REPO_NAME
+
+
 
 ---
 
